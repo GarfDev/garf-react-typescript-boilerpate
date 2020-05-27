@@ -1,131 +1,38 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useToasts } from 'react-toast-notifications';
+import { setImage } from '../actions';
 import styled from 'styled-components';
-import { Product } from '../types';
-import { detectProductHost } from '../actions';
-import { tikiParser } from '../adapters';
-import { productInitialState, adsLink } from '../constants';
-// import { handleGoogleLogin } from '../firebase';
-import Header from '../components/Header';
-import SearchBar from '../components/Search';
-import InfoContainer from '../components/Info';
-import Cards from '../components/Cards';
-import { Helmet } from 'react-helmet';
-import favicon from '../../../assest/image/favicon.ico';
-
+import { Link } from 'react-router-dom';
 export default function Homepage() {
-  // Initial Values
   const dispatch = useDispatch();
-  const { addToast } = useToasts();
-  const [inputData, setInputData] = React.useState('');
-  // handleGoogleLogin();
-  // Homepage States
-  const [productPreview, setProductPreview] = React.useState(false);
-  const [productLoading, setProductLoading] = React.useState(false);
-  const [savedItems, setSavedItems] = React.useState<Product[] | []>([]);
-  const [productData, setProductData] = React.useState<Product>(productInitialState);
 
-  // Event Handle Functions
-  const handleOnChange = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setInputData((event.target as any).value);
+  const handleOnMouseHover = () => {
+    dispatch(
+      setImage(
+        // eslint-disable-next-line max-len
+        'https://images.unsplash.com/photo-1588783948922-d2f155b13c89?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=920&q=80',
+      ),
+    );
   };
 
-  const handleOnClose = () => {
-    setProductPreview(false);
-    setProductData(productInitialState);
-    setInputData('');
-  };
-
-  const handleOnsubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setProductData(productInitialState);
-    setProductLoading(true);
-    setProductPreview(false);
-    const callback = (response: any) => {
-      const result = tikiParser(response.response);
-      setProductData({ ...result, productURL: inputData });
-      setProductLoading(false);
-      setProductPreview(true);
-    };
-    dispatch(detectProductHost(inputData, callback));
-  };
-
-  const handleOnCopy = (string: string) => (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const concatedLink = adsLink + encodeURIComponent(string);
-    navigator.clipboard.writeText(concatedLink).then(() => {
-      addToast('Copied your link to clipboard', { appearance: 'success' });
-    });
-  };
-
-  const handleOnDelete = (title: string) => (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const filteredData = savedItems.filter(item => item.title != title);
-    setSavedItems(filteredData);
-    localStorage.setItem('items', JSON.stringify(filteredData));
-  };
-
-  const loadSavedItems = () => {
-    const savedItems = JSON.parse(localStorage.getItem('items') || '[]');
-    setSavedItems(savedItems);
-  };
-
-  const handleOnSaveItems = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const currentItemList = JSON.parse(localStorage.getItem('items') || '[]');
-    currentItemList.unshift(productData);
-    localStorage.setItem('items', JSON.stringify(currentItemList));
-    setProductPreview(false);
-    setInputData('');
-    addToast('Saved your item', { appearance: 'success' });
-    loadSavedItems();
-  };
-
-  // ComponentDidMouth
-  React.useEffect(() => {
-    loadSavedItems();
-  }, []);
-
-  // Main return fucntion
   return (
-    <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <link rel="icon" href={favicon} type="image/gif" sizes="16x16"></link>
-        <title>Reminder - Powered by GarfDev</title>
-      </Helmet>
-      <HomepageWrapper>
-        <Header titles={['Reminder']} />
-        <SearchBar
-          inputData={inputData}
-          handleOnChange={handleOnChange}
-          handleOnSubmit={handleOnsubmit}
-          loading={productLoading}
-        />
-        <InfoContainer
-          title={productData.title}
-          price={productData.price}
-          previewImage={productData.imgURL}
-          visible={productPreview}
-          onSaveItems={handleOnSaveItems}
-          onCancel={handleOnClose}
-        />
-        <Cards data={savedItems} onCopy={handleOnCopy} onDelete={handleOnDelete} />
-      </HomepageWrapper>
-    </>
+    <Container>
+      <Link
+        to="/image"
+        onMouseEnter={() => {
+          handleOnMouseHover();
+        }}
+      >
+        GOOOOOOO
+      </Link>
+    </Container>
   );
 }
 
-const HomepageWrapper = styled.div`
+const Container = styled.div`
   display: flex;
-  width: 100%;
-  flex-direction: column;
-  justify-content: flex-start;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
   align-items: center;
 `;

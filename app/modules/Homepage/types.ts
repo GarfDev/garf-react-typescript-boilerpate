@@ -1,14 +1,7 @@
-export interface Product {
-  title: string | undefined;
-  price: string | undefined;
-  imgURL: string | undefined;
-  content?: string | undefined;
-  productURL?: string | undefined;
-}
+import { ActionType } from 'typesafe-actions';
+import * as actions from './actions';
 
-export enum supportedHosts {
-  TIKI = 'tiki',
-  SENDO = 'sendo',
-  LAZADA = 'lazada',
-  SHOPEE = 'shopee',
+export type HomepageAction = ActionType<typeof actions>;
+export interface HomepageState {
+  image: string;
 }
